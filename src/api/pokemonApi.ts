@@ -1,7 +1,7 @@
-import { PokemonInterface, PokemonResultInterface } from "@/config/interfaces";
 import api from "@/lib/axios";
-
 import { isAxiosError } from "axios";
+import { PokemonInterface, PokemonResultInterface } from "@/config/interfaces";
+
 
 export async function getPokemons() {
   try {

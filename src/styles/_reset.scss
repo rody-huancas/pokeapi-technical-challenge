@@ -37,3 +37,7 @@ svg {
   height: auto;
   max-width: 100%;
 }
+
+::-webkit-scrollbar {
+  width: 0px;
+}

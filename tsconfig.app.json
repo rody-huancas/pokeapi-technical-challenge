@@ -17,7 +17,8 @@
       "@/config/*": ["config/*"],
       "@/styles/*": ["styles/*"],
       "@/routes/*": ["routes/*"],
-      "@/pages/*": ["pages/*"]
+      "@/pages/*": ["pages/*"],
+      "@/store/*": ["store/*"],
     },
 
     /* Bundler mode */

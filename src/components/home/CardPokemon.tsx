@@ -1,53 +1,52 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getPokemonById } from "@/api/pokemonApi";
-import { ResultPokemon } from "@/config/interfaces";
 import { useNavigate } from "react-router-dom";
+
+import { useStoreApi } from "@/store/store";
+import { ResultPokemon } from "@/config/interfaces";
+import { getPokemonById } from "@/api/pokemonApi";
 
 type CardPokemonProps = {
   pokemonResult: ResultPokemon;
-  types: string[]; // Tipos de Pokémon seleccionados
 };
 
-export const CardPokemon: React.FC<CardPokemonProps> = ({
-  pokemonResult,
-  types,
-}) => {
+export const CardPokemon: React.FC<CardPokemonProps> = ({ pokemonResult }) => {
   const navigate = useNavigate();
-
-  const { name, url } = pokemonResult;
+  const selectedTypes = useStoreApi((state) => state.selectedTypes);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getPokemon", url],
-    queryFn: () => getPokemonById(url),
+    queryKey: ["getPokemon", pokemonResult.url],
+    queryFn: () => getPokemonById(pokemonResult.url),
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>Cargando...</div>;
 
   if (data) {
     const pokemonTypes = data.types.map((type) => type.type.name);
-
-    // Verificar si el Pokémon tiene al menos uno de los tipos seleccionados
     const hasSelectedTypes =
-      types.length === 0 || types.some((type) => pokemonTypes.includes(type));
+      selectedTypes.length === 0 ||
+      selectedTypes.some((type) => pokemonTypes.includes(type));
 
-    // Si no tiene ninguno de los tipos seleccionados, no renderizar
     if (!hasSelectedTypes) return null;
+
+    const primaryType = pokemonTypes[0];
 
     return (
       <div
-        className="pokemon-card"
-        onClick={() => navigate(`/pokemon/${name}`)}
+        className={`card__pokemon ${primaryType}`}
+        onClick={() => navigate(`/pokemon/${pokemonResult.name}`)}
       >
-        <h2>{name}</h2>
-        <img src={data.sprites.front_default} alt={name} />
-        <p>Height: {data.height}</p>
-        <p>Weight: {data.weight}</p>
-        <p>Base Experience: {data.base_experience}</p>
+        <div className="card__body">
+          <h2 className="card__title">{pokemonResult.name}</h2>
+          <img
+            className="card__img"
+            src={data.sprites.other?.["official-artwork"].front_default}
+            alt={pokemonResult.name}
+          />
+        </div>
         <p>Types: {pokemonTypes.join(", ")}</p>
       </div>
     );
   }
 
-  return <div>Error fetching Pokémon data</div>;
+  return <div>Error al obtener los datos</div>;
 };

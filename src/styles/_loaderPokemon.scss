@@ -1,3 +1,11 @@
+.loader {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5rem 0;
+}
+
 .pokemon_loader {
   position: relative;
   height: 100px;
